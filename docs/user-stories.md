@@ -21,6 +21,13 @@ Numbers in the acceptance criteria (character limits, time windows) are placehol
 - **Tab order:** the page you opened comes first, then everyone else in the order they joined.
 - Nobody writes about anyone else, so there is nothing to confirm or re-confirm after edits. People can hide a tab from their own page but can't remove anyone from the project.
 
+## How descriptions are stored
+
+- Each project page's description is saved as a **package of two formats**: the Tiptap JSON (the original, with all editor features) and HTML generated from that JSON when the user saves.
+- **OpenShowcase always displays the JSON.** The HTML exists so other sites can show descriptions without Tiptap.
+- The HTML is generated from the JSON, never from what the user typed, and both are saved in the same write. Because anyone can write a record without our editor, the stored HTML is treated as untrusted.
+- Each package has a version label (`tiptap-v1`) so the format can be migrated later.
+
 ## Summary
 
 | ID | Title | Priority |
@@ -36,6 +43,7 @@ Numbers in the acceptance criteria (character limits, time windows) are placehol
 | US-9 | Leave a project | MVP |
 | US-10 | Hide a tab from my page | MVP |
 | US-11 | Stay linked when someone in the middle leaves | MVP |
+| US-21 | Display descriptions on other sites | MVP |
 | US-12 | Post milestones and releases | Later |
 | US-13 | Invite inbox | Later |
 | US-14 | Endorse a teammate's page | Later |
@@ -84,10 +92,22 @@ Numbers in the acceptance criteria (character limits, time windows) are placehol
 - **User Story Statement:** As a student developer, I want to create a page for a project with a title, summary, description, tech stack, links and screenshots, so that I can show what I built.
 - **Acceptance Criteria:**
   - Title (1–100 characters) and a plain-text summary (1–200 characters) are required; everything else is optional.
-  - The description uses a rich-text editor limited to headings, bold, italic, lists and links.
+  - The description uses a Tiptap editor limited to headings, bold, italic, lists and links.
+  - Saving stores the description as Tiptap JSON plus HTML generated from it, with the version label `tiptap-v1`.
+  - Reopening the editor loads the JSON, so no formatting is lost between edits.
   - Links must use `http`, `https` or `mailto`; anything else shows an inline error.
+  - A description over the size limit (e.g. 20,000 characters of text) can't be saved and shows the limit.
   - Up to 5 screenshots; an image over 1 MB is rejected with a message stating the limit.
   - The page has a public URL that loads without signing in.
+
+### US-21 · Display descriptions on other sites (MVP)
+
+- **User Story Statement:** As a developer of another website, I want to display OpenShowcase project descriptions without using Tiptap, so that projects can be shown outside OpenShowcase.
+- **Acceptance Criteria:**
+  - Every saved description includes an HTML version alongside the Tiptap JSON.
+  - The HTML uses only `p`, `h2`, `h3`, `strong`, `em`, `ul`, `ol`, `li` and `a`.
+  - The lexicon documents that the HTML is untrusted and must be sanitized before display.
+  - Editing a description regenerates the HTML in the same save, so the two formats always match for records written by OpenShowcase.
 
 ### US-12 · Post milestones and releases (Later)
 
@@ -138,6 +158,7 @@ Numbers in the acceptance criteria (character limits, time windows) are placehol
   - A project page shows a tab for every linked member.
   - The page I opened is the first tab; the rest follow in the order members joined.
   - Each tab shows the person's name, role tags and "Invited by …".
+  - Each tab's description is displayed from its JSON; formatting outside the allowed list is removed, and the stored HTML is never displayed.
   - Switching tabs changes the URL, so any tab can be shared directly.
   - If a member's page can't be loaded (deleted account, host down), their tab is skipped and the rest of the page still works.
   - Tabs work without signing in.
