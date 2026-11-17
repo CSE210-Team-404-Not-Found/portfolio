@@ -1,0 +1,92 @@
+# Checks on every push, SonarQube Cloud analysis of main and pull requests,
+# release pull requests on main, and the Cloudflare Workers deploy of each
+# release tag. See ADR-0002, ADR-0003, ADR-0004 and ADR-0005.
+
+version: 2.1
+
+orbs:
+  sonarcloud: sonarsource/sonarcloud@4.0
+
+executors:
+  node:
+    docker:
+      - image: cimg/node:22.23
+
+jobs:
+  check:
+    executor: node
+    steps:
+      - checkout
+      - run:
+          working_directory: client
+          command: npm ci
+      - run:
+          working_directory: client
+          command: npm run lint
+      - run:
+          working_directory: client
+          command: npm test
+      - run:
+          working_directory: client
+          command: npm run build
+
+  analyze:
+    executor: node
+    steps:
+      - checkout
+      - run: .circleci/scripts/halt-unless-main-or-pull-request.sh
+      - run:
+          working_directory: client
+          command: npm ci
+      - run:
+          working_directory: client
+          command: npm run coverage
+      - sonarcloud/scan
+
+  release:
+    executor: node
+    environment:
+      REPOSITORY: << pipeline.git.repo_owner >>/<< pipeline.git.repo_name >>
+    steps:
+      - checkout
+      - run: .circleci/scripts/release.sh
+
+  deploy:
+    executor: node
+    steps:
+      - checkout
+      - run:
+          working_directory: client
+          command: npm ci
+      - run:
+          working_directory: client
+          command: npm run build
+      - run:
+          working_directory: client
+          command: npm run deploy
+
+workflows:
+  check-and-deploy:
+    # A job runs on a release tag only if it, and every job it requires, has a
+    # tags filter. Branches are unaffected by a tags filter.
+    jobs:
+      - check:
+          filters:
+            tags:
+              only: /^client-v.*/
+      - analyze:
+          context: SonarCloud
+      - release:
+          context: GitHub
+          requires: [check]
+          filters:
+            branches:
+              only: main
+      - deploy:
+          context: Cloudflare
+          requires: [check]
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^client-v.*/
