@@ -1,121 +1,83 @@
 import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
 import './App.css'
+import { useAuth } from './auth/auth-context.ts'
+import { AuthProvider } from './auth/AuthProvider.tsx'
 
+// A minimal screen for trying sign-in. The designed /login page and the
+// signed-in header are #19.
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
+    <AuthProvider>
+      <main className="auth-demo">
+        <h1>ATFolio</h1>
+        <SignIn />
+      </main>
+    </AuthProvider>
+  )
+}
+
+function SignIn() {
+  const auth = useAuth()
+  const [handle, setHandle] = useState('')
+
+  if (auth.status === 'loading') {
+    return <p>Loading…</p>
+  }
+
+  if (auth.status === 'signed-in') {
+    return (
+      <section className="auth-card">
+        <p>
+          Signed in as <strong>@{auth.session.handle}</strong>
+        </p>
+        <code className="auth-did">{auth.session.did}</code>
+        <button type="button" onClick={() => void auth.signOut()}>
+          Sign out
         </button>
       </section>
+    )
+  }
 
-      <div className="ticks"></div>
+  const redirecting = auth.status === 'redirecting'
+  const error = auth.status === 'signed-out' ? auth.error : undefined
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+  return (
+    <form
+      className="auth-card"
+      onSubmit={(event) => {
+        event.preventDefault()
+        void auth.signIn(handle)
+      }}
+    >
+      <label htmlFor="handle">Handle</label>
+      <input
+        id="handle"
+        name="handle"
+        placeholder="alice.bsky.social"
+        autoComplete="username"
+        autoCapitalize="none"
+        autoCorrect="off"
+        spellCheck={false}
+        required
+        disabled={redirecting}
+        value={handle}
+        onChange={(event) => setHandle(event.target.value)}
+      />
+      <button type="submit" disabled={redirecting}>
+        {redirecting ? 'Redirecting…' : 'Sign in'}
+      </button>
+      {error && (
+        <p className="auth-error" role="alert">
+          {error.message}
+        </p>
+      )}
+      <p>
+        Don't have an account?{' '}
+        <a href="https://bsky.app/" target="_blank" rel="noreferrer">
+          Create one on Bluesky
+        </a>
+      </p>
+    </form>
   )
 }
 
