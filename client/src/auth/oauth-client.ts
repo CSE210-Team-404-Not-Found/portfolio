@@ -11,11 +11,14 @@ import {
   buildAtprotoLoopbackClientMetadata,
   DidError,
   FetchRequestError,
+  HandleResolverError,
+  isResolvedHandle,
   OAuthCallbackError,
   oauthClientMetadataSchema,
   TokenInvalidError,
   TokenRefreshError,
   TokenRevokedError,
+  type HandleResolver,
   type OAuthSession,
 } from '@atproto/oauth-client-browser'
 import type { AuthError, AuthErrorKind, AuthSession } from './auth-context.ts'
@@ -30,6 +33,35 @@ import { AuthFailure, authError } from './errors.ts'
  */
 const HANDLE_RESOLVER = 'https://bsky.social'
 
+/**
+ * Calls com.atproto.identity.resolveHandle on HANDLE_RESOLVER. Used instead of
+ * passing the URL to the SDK, whose resolver (0.4.10) only recognizes the
+ * older "InvalidRequest" reply for an unknown handle. bsky.social now replies
+ * "HandleNotFound" for unknown *.bsky.social handles, which the SDK reports
+ * like an outage.
+ */
+const handleResolver: HandleResolver = {
+  async resolve(handle, options) {
+    const url = new URL('/xrpc/com.atproto.identity.resolveHandle', HANDLE_RESOLVER)
+    url.searchParams.set('handle', handle)
+    const response = await fetch(url, {
+      cache: options?.noCache ? 'no-cache' : undefined,
+      signal: options?.signal,
+      redirect: 'error',
+    })
+    // 400 means the handle doesn't resolve to an account.
+    if (response.status === 400) return null
+    if (!response.ok) {
+      throw new HandleResolverError(`resolveHandle failed with HTTP ${response.status}`)
+    }
+    const { did } = await response.json()
+    if (!isResolvedHandle(did)) {
+      throw new HandleResolverError('resolveHandle returned an invalid DID')
+    }
+    return did
+  },
+}
+
 /** The atproto stand-in for a handle that doesn't match its account. */
 const INVALID_HANDLE = 'handle.invalid'
 
@@ -42,7 +74,7 @@ let initialized: Promise<AuthSession | undefined> | undefined
 function getClient(): BrowserOAuthClient {
   client ??= new BrowserOAuthClient({
     clientMetadata: clientMetadata(),
-    handleResolver: HANDLE_RESOLVER,
+    handleResolver,
     onSessionDeleted: (did, cause) => {
       // A failed refresh deserves a message; signing out doesn't. Sign-outs
       // from another tab arrive with a copy of `cause` that is no longer an
