@@ -9,6 +9,7 @@
 import {
   BrowserOAuthClient,
   buildAtprotoLoopbackClientMetadata,
+  DidError,
   FetchRequestError,
   OAuthCallbackError,
   oauthClientMetadataSchema,
@@ -106,9 +107,9 @@ export async function signIn(handle: string): Promise<never> {
   // Look the account up first, to tell "no such account" apart from other
   // failures. The client caches the result, so authorize() doesn't repeat it.
   await oauth.identityResolver.resolve(handle).catch((err: unknown) => {
-    throw isNetworkError(err)
-      ? toAuthFailure(err)
-      : new AuthFailure('account-not-found', { cause: err })
+    throw isAccountMissing(err)
+      ? new AuthFailure('account-not-found', { cause: err })
+      : toAuthFailure(err)
   })
   const url = await oauth.authorize(handle).catch((err: unknown) => {
     throw toAuthFailure(err)
@@ -144,6 +145,18 @@ async function describeSession(session: OAuthSession): Promise<AuthSession> {
     console.warn(`Couldn't resolve the handle of ${session.did}`, err)
     return { did: session.did, handle: INVALID_HANDLE }
   }
+}
+
+/**
+ * True if the lookup failed because there is no such account: the handle is
+ * invalid or doesn't resolve, or the DID is malformed, unknown or deleted.
+ * An outage or rate limit on the way doesn't count.
+ */
+function isAccountMissing(err: unknown): boolean {
+  if (isNetworkError(err)) return false
+  // The identity resolver sets this name itself, so it survives minification.
+  if (err instanceof Error && err.name === 'IdentityResolverError') return true
+  return err instanceof DidError && [400, 404, 410].includes(err.status)
 }
 
 function toAuthFailure(err: unknown): AuthFailure {
