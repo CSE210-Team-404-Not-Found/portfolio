@@ -1,0 +1,13 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "bump-minor-pre-major": true,
+  "include-component-in-tag": true,
+  "bootstrap-sha": "96a01c2b5c2214bb43b2b7881dfce1d6d27d35cc",
+  "pull-request-header": "Merging this pull request publishes the release below.",
+  "packages": {
+    "client": {
+      "release-type": "node",
+      "component": "client"
+    }
+  }
+}
