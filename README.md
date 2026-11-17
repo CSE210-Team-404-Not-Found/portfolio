@@ -12,7 +12,7 @@ A portfolio app built on the AT Protocol. Sign in with your existing atproto han
 
 ## Development
 
-The client lives in `client/` and needs Node.js 22 or later.
+The client lives in `client/` and needs Node.js 24 or later, the version whose npm wrote the lockfile.
 
 ```sh
 cd client
