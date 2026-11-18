@@ -50,8 +50,8 @@ sign in again.
 
 ## Permissions
 
-The app asks for `atproto` plus `repo:com.at-folio.temp.profile`, which grants
-write access to the profile collection. Users with an older session need to
-sign out and sign in again to approve that permission. Add a
-`repo:<collection>` scope to `OAUTH_SCOPE` before writing any other record
-collections.
+The app asks for `atproto`, `repo:com.at-folio.temp.profile`, and
+`blob:image/*`. These grant identity, profile record writes, and image uploads.
+Users with an older session need to sign out and sign in again to approve the
+new permissions. Add a `repo:<collection>` scope to `OAUTH_SCOPE` before
+writing any other record collections.

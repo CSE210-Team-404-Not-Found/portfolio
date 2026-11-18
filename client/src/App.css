@@ -116,6 +116,14 @@
   resize: vertical;
 }
 
+.profile-avatar-preview {
+  width: 112px;
+  height: 112px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .profile-form button,
 .profile-editor button {
   border: 2px solid transparent;
