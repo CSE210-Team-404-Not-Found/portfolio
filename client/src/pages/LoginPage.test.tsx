@@ -117,7 +117,9 @@ describe('LoginPage', () => {
     await user.type(screen.getByLabelText('Handle'), '.bsky.social')
     await user.click(screen.getByRole('button', { name: 'Sign in' }))
 
-    expect(await screen.findByRole('alert')).toHaveTextContent("We couldn't reach the sign-in server.")
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      "We couldn't reach the sign-in server.",
+    )
   })
 
   it('shows a message when the user cancelled sign-in on their account page', async () => {
@@ -208,7 +210,12 @@ describe('Header', () => {
 
   it('shows a fallback instead of an unconfirmed handle', async () => {
     renderApp(
-      { initial: { status: 'signed-in', session: { did: 'did:plc:test', handle: 'handle.invalid' } } },
+      {
+        initial: {
+          status: 'signed-in',
+          session: { did: 'did:plc:test', handle: 'handle.invalid' },
+        },
+      },
       '/',
     )
 

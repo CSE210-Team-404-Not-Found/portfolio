@@ -27,7 +27,10 @@ export function Header() {
         OpenShowcase
       </Link>
       {auth.status === 'loading' && returningFromSignIn && (
-        <span role="status" className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400">
+        <span
+          role="status"
+          className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400"
+        >
           <span
             aria-hidden="true"
             className="h-4 w-4 animate-spin rounded-full border-2 border-neutral-300 border-t-neutral-900 dark:border-neutral-700 dark:border-t-neutral-100"
@@ -51,8 +54,7 @@ function SignedInUser({ did, handle }: { did: string; handle: string }) {
   const { signOut } = useAuth()
   const { data: profile } = useProfile(did)
   // The handle can be unconfirmed (e.g. its server is briefly down); fall back to the display name.
-  const label =
-    handle === INVALID_HANDLE ? (profile?.displayName ?? 'Your account') : `@${handle}`
+  const label = handle === INVALID_HANDLE ? (profile?.displayName ?? 'Your account') : `@${handle}`
 
   return (
     <div className="flex items-center gap-3">

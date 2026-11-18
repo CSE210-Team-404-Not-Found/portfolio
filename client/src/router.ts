@@ -1,4 +1,9 @@
-import { createRootRoute, createRoute, createRouter, type RouterHistory } from '@tanstack/react-router'
+import {
+  createRootRoute,
+  createRoute,
+  createRouter,
+  type RouterHistory,
+} from '@tanstack/react-router'
 import { RootLayout } from './components/RootLayout.tsx'
 import { HomePage } from './pages/HomePage.tsx'
 import { LoginPage } from './pages/LoginPage.tsx'

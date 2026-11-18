@@ -31,8 +31,8 @@ export function LoginPage() {
     <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center px-4 py-12">
       <h1 className="text-2xl font-semibold">Sign in to OpenShowcase</h1>
       <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-        Use your Bluesky or other AT Protocol handle. You'll enter your password on your
-        account's own sign-in page, not here.
+        Use your Bluesky or other AT Protocol handle. You'll enter your password on your account's
+        own sign-in page, not here.
       </p>
 
       <form onSubmit={handleSubmit} noValidate className="mt-6 flex flex-col gap-3">
