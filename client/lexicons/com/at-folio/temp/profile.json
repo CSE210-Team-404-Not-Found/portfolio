@@ -1,0 +1,41 @@
+{
+  "lexicon": 1,
+  "id": "com.at-folio.temp.profile",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A user's ATFolio portfolio profile.",
+      "key": "literal:self",
+      "record": {
+        "type": "object",
+        "required": ["fullName"],
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "maxLength": 256,
+            "maxGraphemes": 64,
+            "description": "The user's full name."
+          },
+          "jobTitle": {
+            "type": "string",
+            "maxLength": 512,
+            "maxGraphemes": 128,
+            "description": "The user's current job title or professional role."
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 10000,
+            "maxGraphemes": 5000,
+            "description": "Free-form text introducing the user."
+          },
+          "avatar": {
+            "type": "blob",
+            "accept": ["image/jpeg", "image/png", "image/webp"],
+            "maxSize": 1048576,
+            "description": "The user's profile picture, limited to 1 MB."
+          }
+        }
+      }
+    }
+  }
+}

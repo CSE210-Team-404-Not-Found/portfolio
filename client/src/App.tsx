@@ -2,6 +2,8 @@ import { useState } from 'react'
 import './App.css'
 import { useAuth } from './auth/auth-context.ts'
 import { AuthProvider } from './auth/AuthProvider.tsx'
+import { ProfileEditor } from './components/ProfileEditor.tsx'
+import { ProjectEditor } from './components/ProjectEditor.tsx'
 
 // A minimal screen for trying sign-in. The designed /login page and the
 // signed-in header are #19.
@@ -31,6 +33,8 @@ function SignIn() {
           Signed in as <strong>@{auth.session.handle}</strong>
         </p>
         <code className="auth-did">{auth.session.did}</code>
+        <ProfileEditor did={auth.session.did} />
+        <ProjectEditor did={auth.session.did} />
         <button type="button" onClick={() => void auth.signOut()}>
           Sign out
         </button>

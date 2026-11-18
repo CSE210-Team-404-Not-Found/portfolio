@@ -50,6 +50,8 @@ sign in again.
 
 ## Permissions
 
-The app asks only for `atproto`, which identifies the account and grants no
-access to it. Creating records (#18) needs `repo:<collection>` scopes added to
-`OAUTH_SCOPE` in `client-metadata.ts`.
+The app asks for `atproto`, repository write scopes for the profile and project
+collections, and blob scopes for images, JSON, and HTML. Users with an older
+session need to sign out and sign in again to approve the new permissions. Add
+a `repo:<collection>` scope to `OAUTH_SCOPE` before writing any other record
+collections.

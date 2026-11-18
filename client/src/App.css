@@ -65,3 +65,225 @@
   align-self: flex-start;
   overflow-wrap: anywhere;
 }
+
+.profile-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+  padding-block: 16px;
+  border-block: 1px solid var(--border);
+}
+
+.profile-editor h2 {
+  margin: 0;
+}
+
+.profile-editor-hint {
+  font-size: 0.9rem;
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-form label {
+  color: var(--text-h);
+  font-weight: 500;
+}
+
+.profile-form input,
+.profile-form textarea,
+.profile-form button,
+.profile-editor button {
+  font: inherit;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.profile-form input,
+.profile-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+.profile-form textarea {
+  resize: vertical;
+}
+
+.profile-avatar-preview {
+  width: 112px;
+  height: 112px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-form button,
+.profile-editor button {
+  border: 2px solid transparent;
+  color: var(--accent);
+  background: var(--accent-bg);
+  cursor: pointer;
+}
+
+.profile-form button:hover:not(:disabled),
+.profile-editor button:hover:not(:disabled) {
+  border-color: var(--accent-border);
+}
+
+.profile-form button:disabled,
+.profile-form input:disabled,
+.profile-form textarea:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+.profile-form input:focus-visible,
+.profile-form textarea:focus-visible,
+.profile-form button:focus-visible,
+.profile-editor button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.profile-editor-notice {
+  color: #16803c;
+}
+
+.project-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+  padding-block: 16px;
+  border-block: 1px solid var(--border);
+}
+
+.project-editor h2,
+.project-editor h3,
+.project-editor p {
+  margin-block: 0;
+}
+
+.project-editor-hint {
+  font-size: 0.9rem;
+}
+
+.project-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.project-form label {
+  color: var(--text-h);
+  font-weight: 500;
+}
+
+.project-form input,
+.project-form textarea,
+.project-editor button {
+  box-sizing: border-box;
+  font: inherit;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.project-form input,
+.project-form textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+.project-form textarea {
+  resize: vertical;
+}
+
+.project-code {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace !important;
+}
+
+.project-form-actions,
+.project-item-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.project-form button,
+.project-editor button {
+  border: 2px solid transparent;
+  color: var(--accent);
+  background: var(--accent-bg);
+  cursor: pointer;
+}
+
+.project-editor button:hover:not(:disabled) {
+  border-color: var(--accent-border);
+}
+
+.project-editor button:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+.project-form input:focus-visible,
+.project-form textarea:focus-visible,
+.project-editor button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.project-thumbnail-preview {
+  width: 160px;
+  max-height: 120px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.project-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.project-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.project-list li p {
+  margin-top: 4px;
+  white-space: pre-wrap;
+}
+
+.project-list-thumbnail {
+  flex: 0 0 96px;
+  width: 96px;
+  height: 72px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.project-list-details {
+  flex: 1;
+  min-width: 0;
+}

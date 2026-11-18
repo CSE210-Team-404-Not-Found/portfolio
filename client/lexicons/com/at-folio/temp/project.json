@@ -1,0 +1,47 @@
+{
+  "lexicon": 1,
+  "id": "com.at-folio.temp.project",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A user's page describing their contribution to a project.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["title", "summary"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 2000,
+            "maxGraphemes": 100,
+            "description": "The project's title."
+          },
+          "summary": {
+            "type": "string",
+            "maxLength": 4000,
+            "maxGraphemes": 200,
+            "description": "A short plain-text summary of the project."
+          },
+          "thumbnail": {
+            "type": "blob",
+            "accept": ["image/*"],
+            "maxSize": 1048576,
+            "description": "The project's preview image, limited to 1 MB."
+          },
+          "tiptapJson": {
+            "type": "blob",
+            "accept": ["application/json"],
+            "maxSize": 500000,
+            "description": "The Tiptap document JSON. The app validates its structure and allowed nodes."
+          },
+          "tiptapHtml": {
+            "type": "blob",
+            "accept": ["text/html"],
+            "maxSize": 500000,
+            "description": "HTML rendering of the Tiptap document, for consumers that don't use Tiptap."
+          }
+        }
+      }
+    }
+  }
+}
