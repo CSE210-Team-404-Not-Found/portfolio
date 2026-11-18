@@ -29,9 +29,10 @@ import { AuthFailure, authError } from './errors.ts'
  * Turns the handle the user types into their DID. Browsers can't make the DNS
  * queries this needs, so a server does it. bsky.social resolves any handle,
  * including custom domains and accounts hosted elsewhere, but sees the user's
- * IP address and the handle they typed.
+ * IP address and the handle they typed. `.env.docker` points this at the
+ * local PDS instead.
  */
-const HANDLE_RESOLVER = 'https://bsky.social'
+const HANDLE_RESOLVER: string = import.meta.env.VITE_HANDLE_RESOLVER ?? 'https://bsky.social'
 
 /**
  * Calls com.atproto.identity.resolveHandle on HANDLE_RESOLVER. Used instead of
@@ -72,9 +73,14 @@ let client: BrowserOAuthClient | undefined
 let initialized: Promise<AuthSession | undefined> | undefined
 
 function getClient(): BrowserOAuthClient {
+  // The local network (`npm run dev:docker`) has its own PLC directory and
+  // speaks plain HTTP. Without `.env.docker` the real directory is used.
+  const plcDirectoryUrl: string | undefined = import.meta.env.VITE_PLC_DIRECTORY_URL
   client ??= new BrowserOAuthClient({
     clientMetadata: clientMetadata(),
     handleResolver,
+    plcDirectoryUrl,
+    allowHttp: import.meta.env.DEV,
     onSessionDeleted: (did, cause) => {
       // A failed refresh deserves a message; signing out doesn't. Sign-outs
       // from another tab arrive with a copy of `cause` that is no longer an

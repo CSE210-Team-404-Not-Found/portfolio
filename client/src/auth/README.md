@@ -33,6 +33,12 @@ metadata, sign-in only works on a loopback IP, so opening `localhost` reloads
 the page on `127.0.0.1`. Development uses a loopback client: no setup, but the
 sign-in page can't show the app's name, and sessions last about a day.
 
+Sign-in talks to the real network, so it needs a real account. For a local
+network with throwaway accounts, run `docker compose up` at the repository
+root and start the client with `npm run dev:docker` instead: `.env.docker`
+points it at the local PLC directory and PDS. The accounts and ports are in
+[docs/local-network.md](../../../docs/local-network.md).
+
 ## Production
 
 The OAuth `client_id` is the URL of a JSON document describing the app.
