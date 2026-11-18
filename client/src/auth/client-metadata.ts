@@ -11,10 +11,12 @@
 
 /**
  * What the app asks the user to allow. `atproto` identifies the account; the
- * repo scope grants profile record writes and the blob scope allows image
- * uploads. Users with an older session need to sign in again to grant them.
+ * repo scopes grant profile and project record writes. Blob scopes allow the
+ * image, JSON, and HTML uploads used by those records. Users with an older
+ * session need to sign in again to grant these permissions.
  */
-export const OAUTH_SCOPE = 'atproto repo:com.at-folio.temp.profile blob:image/*'
+export const OAUTH_SCOPE =
+  'atproto repo:com.at-folio.temp.profile repo:com.at-folio.temp.project blob:image/* blob:application/json blob:text/html'
 
 /** Shown to the user on their authorization server's consent screen. */
 const CLIENT_NAME = 'ATFolio'
