@@ -10,11 +10,11 @@
 // not use browser or Node APIs.
 
 /**
- * What the app asks the user to allow. `atproto` alone only identifies the
- * account (its DID). Writing records (#18) needs `repo:<collection>` scopes
- * added here, and users then sign in again to grant them.
+ * What the app asks the user to allow. `atproto` identifies the account;
+ * the repo scope grants write access to this app's profile collection. Users
+ * with an older session need to sign in again to grant the added permission.
  */
-export const OAUTH_SCOPE = 'atproto'
+export const OAUTH_SCOPE = 'atproto repo:com.at-folio.temp.profile'
 
 /** Shown to the user on their authorization server's consent screen. */
 const CLIENT_NAME = 'ATFolio'

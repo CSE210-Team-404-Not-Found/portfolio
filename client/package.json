@@ -4,16 +4,18 @@
   "version": "0.2.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "dev:docker": "vite --mode docker",
-    "build": "tsc -b && vite build",
+    "lex:build": "lex build --lexicons ./lexicons --out ./src/lexicons --index-file --override",
+    "dev": "npm run lex:build && vite",
+    "dev:docker": "npm run lex:build && vite --mode docker",
+    "build": "npm run lex:build && tsc -b && vite build",
     "lint": "eslint .",
-    "test": "vitest run",
-    "coverage": "vitest run --coverage",
+    "test": "npm run lex:build && vitest run",
+    "coverage": "npm run lex:build && vitest run --coverage",
     "preview": "vite preview",
     "deploy": "wrangler deploy"
   },
   "dependencies": {
+    "@atproto/lex": "^0.5.0",
     "@atproto/oauth-client-browser": "^0.5.14",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"

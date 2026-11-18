@@ -50,6 +50,8 @@ sign in again.
 
 ## Permissions
 
-The app asks only for `atproto`, which identifies the account and grants no
-access to it. Creating records (#18) needs `repo:<collection>` scopes added to
-`OAUTH_SCOPE` in `client-metadata.ts`.
+The app asks for `atproto` plus `repo:com.at-folio.temp.profile`, which grants
+write access to the profile collection. Users with an older session need to
+sign out and sign in again to approve that permission. Add a
+`repo:<collection>` scope to `OAUTH_SCOPE` before writing any other record
+collections.

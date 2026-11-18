@@ -125,6 +125,11 @@ export function initOAuth(): Promise<AuthSession | undefined> {
   return initialized
 }
 
+/** Restores the authenticated session for AT Protocol API clients. */
+export function restoreOAuthSession(did: string): Promise<OAuthSession> {
+  return getClient().restore(did)
+}
+
 async function init(): Promise<AuthSession | undefined> {
   if (!import.meta.env.VITE_APP_URL && window.location.hostname === 'localhost') {
     // The loopback client can't be built on localhost. Reload on 127.0.0.1,

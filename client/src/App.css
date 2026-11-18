@@ -65,3 +65,85 @@
   align-self: flex-start;
   overflow-wrap: anywhere;
 }
+
+.profile-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+  padding-block: 16px;
+  border-block: 1px solid var(--border);
+}
+
+.profile-editor h2 {
+  margin: 0;
+}
+
+.profile-editor-hint {
+  font-size: 0.9rem;
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-form label {
+  color: var(--text-h);
+  font-weight: 500;
+}
+
+.profile-form input,
+.profile-form textarea,
+.profile-form button,
+.profile-editor button {
+  font: inherit;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.profile-form input,
+.profile-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+.profile-form textarea {
+  resize: vertical;
+}
+
+.profile-form button,
+.profile-editor button {
+  border: 2px solid transparent;
+  color: var(--accent);
+  background: var(--accent-bg);
+  cursor: pointer;
+}
+
+.profile-form button:hover:not(:disabled),
+.profile-editor button:hover:not(:disabled) {
+  border-color: var(--accent-border);
+}
+
+.profile-form button:disabled,
+.profile-form input:disabled,
+.profile-form textarea:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+.profile-form input:focus-visible,
+.profile-form textarea:focus-visible,
+.profile-form button:focus-visible,
+.profile-editor button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.profile-editor-notice {
+  color: #16803c;
+}
