@@ -5,9 +5,10 @@ import App from './App.tsx'
 import { VERSION } from './version.ts'
 
 describe('App', () => {
-  it('renders a top-level heading', () => {
+  it('renders a top-level heading', async () => {
     render(<App />)
-    expect(screen.getByRole('heading', { level: 1 })).toBeTruthy()
+    // The router renders the page after its first navigation resolves.
+    expect(await screen.findByRole('heading', { level: 1 })).toBeTruthy()
   })
 })
 
