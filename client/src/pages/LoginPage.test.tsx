@@ -188,6 +188,24 @@ describe('Header', () => {
     expect(await screen.findByRole('link', { name: 'Sign in' })).toBeInTheDocument()
   })
 
+  it('says it is signing you in while finishing the sign-in redirect', async () => {
+    window.history.replaceState(null, '', '/#state=abc&iss=https%3A%2F%2Fbsky.social&code=xyz')
+    try {
+      renderApp({ initial: { status: 'loading' } }, '/')
+
+      expect(await screen.findByRole('status')).toHaveTextContent('Signing you in…')
+    } finally {
+      window.history.replaceState(null, '', '/')
+    }
+  })
+
+  it('stays quiet while restoring a session on a normal page load', async () => {
+    renderApp({ initial: { status: 'loading' } }, '/')
+
+    expect(await screen.findByRole('heading', { level: 1 })).toBeInTheDocument()
+    expect(screen.queryByRole('status')).not.toBeInTheDocument()
+  })
+
   it('shows a fallback instead of an unconfirmed handle', async () => {
     renderApp(
       { initial: { status: 'signed-in', session: { did: 'did:plc:test', handle: 'handle.invalid' } } },
