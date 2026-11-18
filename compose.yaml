@@ -1,0 +1,36 @@
+# A local AT Protocol network for development: PLC directory, PDS with OAuth
+# and seeded accounts, and the Bluesky AppView, from @atproto/dev-env in one
+# container. `docker compose up`, then `npm run dev:docker` in client/.
+# See docs/local-network.md.
+services:
+  atproto:
+    build: docker/atproto
+    ports:
+      - "2581:2581" # introspection: GET / lists every service's URL and DID
+      - "2582:2582" # PLC directory
+      - "2583:2583" # PDS: sign-in, repositories, blobs
+      - "2584:2584" # Bluesky AppView
+    environment:
+      DB_POSTGRES_URL: postgresql://postgres:postgres@postgres:5432/postgres
+      REDIS_HOST: redis:6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+    # In memory: the network is rebuilt from scratch on every start anyway.
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      timeout: 2s
+      retries: 15
+
+  redis:
+    image: redis:7-alpine

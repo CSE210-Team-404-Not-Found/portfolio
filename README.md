@@ -23,6 +23,11 @@ npm test
 npm run build
 ```
 
+`npm run dev` signs in against the real network. To develop against a local
+one instead, `docker compose up` starts it (PLC directory, PDS with test
+accounts, AppView) and `npm run dev:docker` points the client at it. Details
+in [docs/local-network.md](docs/local-network.md).
+
 CircleCI runs the lint, tests and build on every push and pull request,
 analyzes `main` and pull requests with SonarQube Cloud, and deploys each
 release tag to Cloudflare Workers at https://portfolio.atfolio.workers.dev
