@@ -1,3 +1,4 @@
+import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import type { Plugin } from 'vite'
 import { defineConfig } from 'vitest/config'
@@ -5,7 +6,7 @@ import { buildClientMetadata } from './src/auth/client-metadata.ts'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), oauthClientMetadata()],
+  plugins: [react(), tailwindcss(), oauthClientMetadata()],
   // The version from package.json, which release-please bumps; see src/version.ts.
   define: { __APP_VERSION__: JSON.stringify(process.env.npm_package_version ?? '0.0.0') },
   // Sign-in during development only works on 127.0.0.1, not localhost
@@ -14,6 +15,7 @@ export default defineConfig({
   preview: { host: '127.0.0.1' },
   test: {
     environment: 'jsdom',
+    setupFiles: ['./src/test/setup.ts'],
     coverage: { provider: 'v8', reporter: ['text', 'lcov'] },
   },
 })
