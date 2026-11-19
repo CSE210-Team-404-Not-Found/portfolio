@@ -4,6 +4,7 @@
 # See docs/local-network.md.
 services:
   atproto:
+    image: portfolio-atproto
     build: docker/atproto
     ports:
       - "2581:2581" # introspection: GET / lists every service's URL and DID

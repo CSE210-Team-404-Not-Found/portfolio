@@ -25,7 +25,8 @@ npm run build
 
 `npm run dev` signs in against the real network. To develop against a local
 one instead, `docker compose up` starts it (PLC directory, PDS with test
-accounts, AppView) and `npm run dev:docker` points the client at it. Details
+accounts, AppView) and `npm run dev:docker` points the client at it.
+`npm run test:e2e` runs the end-to-end tests against it. Details
 in [docs/local-network.md](docs/local-network.md).
 
 CircleCI runs the lint, tests and build on every push and pull request,

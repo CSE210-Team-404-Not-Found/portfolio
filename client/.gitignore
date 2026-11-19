@@ -28,3 +28,8 @@ dist-ssr
 
 # Vitest coverage
 coverage
+
+# Playwright
+test-results
+playwright-report
+coverage-e2e

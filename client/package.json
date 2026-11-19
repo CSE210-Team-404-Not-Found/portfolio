@@ -9,6 +9,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "test": "vitest run",
+    "test:e2e": "playwright test",
     "coverage": "vitest run --coverage",
     "preview": "vite preview",
     "deploy": "wrangler deploy"
@@ -20,6 +21,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.65.1",
     "@testing-library/react": "^16.3.3",
     "@types/node": "^24.19.2",
     "@types/react": "^19.3.0",
@@ -31,9 +33,12 @@
     "eslint-plugin-react-refresh": "^0.5.7",
     "globals": "^17.13.0",
     "jsdom": "^29.1.1",
+    "monocart-coverage-reports": "^3.2.1",
+    "testcontainers": "^12.2.1",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.72.1",
     "vite": "^8.3.6",
+    "vite-plugin-istanbul": "^9.0.1",
     "vitest": "^5.1.0",
     "wrangler": "^4.163.0"
   }

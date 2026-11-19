@@ -26,7 +26,7 @@ organization, contexts and orbs already exist.
 push: `npm ci`, `npm run lint`, `npm test` and `npm run build` in `client/`,
 the same commands a developer runs locally. It posts the status
 `ci/circleci: check` on the pull request. The other jobs are covered by
-ADR-0003, ADR-0004 and ADR-0005.
+ADR-0003, ADR-0004, ADR-0005 and ADR-0006.
 
 The repository is private on a Free organization, so GitHub rulesets are not
 available and a red check cannot block a merge. The pull request template

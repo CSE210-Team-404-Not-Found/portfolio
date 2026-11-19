@@ -36,12 +36,17 @@ points the handle resolver and the PLC directory at the local servers. The
 OAuth client allows plain HTTP in development builds only. `npm run dev` still
 uses the real network.
 
+The end-to-end tests, `npm run test:e2e` in `client/`, start the same network
+through Testcontainers and sign in against it with Playwright. CircleCI runs
+them on `main` and pull requests, in a VM with Docker.
+
 The day-to-day guide is `docs/local-network.md`.
 
 ### Consequences
 
 * Good: throwaway accounts, no real data touched, works offline.
 * Good: the AppView is there for profiles and feeds when #18 needs it.
+* Good: the end-to-end tests have a real network, locally and in CircleCI.
 * Neutral: the first `docker compose up` builds the image, a few minutes.
 * Bad: the network forgets everything on restart, so test data beyond the
   seeded accounts is re-created by hand or by a script.
