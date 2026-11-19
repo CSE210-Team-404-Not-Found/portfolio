@@ -28,13 +28,13 @@ function SignIn() {
 
   if (auth.status === 'signed-in') {
     return (
-      <section className="auth-card">
+      <section className="auth-card auth-workspace">
         <p>
           Signed in as <strong>@{auth.session.handle}</strong>
         </p>
         <code className="auth-did">{auth.session.did}</code>
         <ProfileEditor did={auth.session.did} />
-        <ProjectEditor did={auth.session.did} />
+        <ProjectEditor did={auth.session.did} authorName={`@${auth.session.handle}`} />
         <button type="button" onClick={() => void auth.signOut()}>
           Sign out
         </button>

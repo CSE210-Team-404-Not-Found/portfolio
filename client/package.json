@@ -17,6 +17,14 @@
   "dependencies": {
     "@atproto/lex": "^0.5.0",
     "@atproto/oauth-client-browser": "^0.5.14",
+    "@google/model-viewer": "^4.4.0",
+    "@tiptap/core": "^3.34.0",
+    "@tiptap/extension-image": "^3.34.0",
+    "@tiptap/extension-youtube": "^3.34.0",
+    "@tiptap/pm": "^3.34.0",
+    "@tiptap/react": "^3.34.0",
+    "@tiptap/starter-kit": "^3.34.0",
+    "lucide-react": "^1.75.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },
