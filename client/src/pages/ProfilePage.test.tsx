@@ -1,0 +1,37 @@
+import { screen } from '@testing-library/react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { renderAt } from '../test/render-at.tsx'
+
+// fakes bluesky's getProfile so the tests don't hit the internet
+function mockProfileResponse(status: number, body: unknown) {
+  vi.spyOn(globalThis, 'fetch').mockImplementation(async (input) => {
+    const url = String(input instanceof Request ? input.url : input)
+    if (url.includes('app.bsky.actor.getProfile')) {
+      return new Response(JSON.stringify(body), { status })
+    }
+    return new Response('{}', { status: 404 })
+  })
+}
+
+afterEach(() => {
+  vi.restoreAllMocks()
+})
+
+describe('ProfilePage', () => {
+  it('shows the name and handle', async () => {
+    mockProfileResponse(200, { handle: 'alice.test', displayName: 'Alice' })
+    renderAt('/profile/alice.test')
+
+    expect(await screen.findByRole('heading', { level: 1, name: 'Alice' })).toBeInTheDocument()
+    expect(screen.getByText('@alice.test')).toBeInTheDocument()
+  })
+
+  it('uses the handle as the name when there is no display name', async () => {
+    mockProfileResponse(200, { handle: 'alice.test' })
+    renderAt('/profile/alice.test')
+
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'alice.test' }),
+    ).toBeInTheDocument()
+  })
+})

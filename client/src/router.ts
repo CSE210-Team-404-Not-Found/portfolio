@@ -7,6 +7,7 @@ import {
 import { RootLayout } from './components/RootLayout.tsx'
 import { HomePage } from './pages/HomePage.tsx'
 import { LoginPage } from './pages/LoginPage.tsx'
+import { ProfilePage } from './pages/ProfilePage.tsx'
 
 const rootRoute = createRootRoute({ component: RootLayout })
 
@@ -22,7 +23,13 @@ const loginRoute = createRoute({
   component: LoginPage,
 })
 
-const routeTree = rootRoute.addChildren([indexRoute, loginRoute])
+const profileRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/profile/$handle',
+  component: ProfilePage,
+})
+
+const routeTree = rootRoute.addChildren([indexRoute, loginRoute, profileRoute])
 
 /** Tests pass a memory history; the app uses the browser's history. */
 export function createAppRouter(history?: RouterHistory) {
