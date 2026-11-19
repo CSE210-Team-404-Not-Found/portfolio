@@ -27,7 +27,9 @@ orb, as on warmup-charts. Automatic analysis cannot import test coverage.
 The `analyze` job runs on every pipeline but ends at once unless the commit
 is on `main` or in a pull request, since the Free plan analyzes only those.
 It runs `npm run coverage`, which is Vitest with V8 coverage writing
-`client/coverage/lcov.info`, then the scanner uploads the analysis using
+`client/coverage/lcov.info`. The end-to-end tests (ADR-0006) add
+`client/coverage-e2e/lcov.info` through the CircleCI workspace, so the
+sign-in flow counts as covered. Then the scanner uploads the analysis using
 `sonar-project.properties` at the repository root. The project key is
 `CSE210-Team-404-Not-Found_portfolio`; the first analysis creates the
 project. SonarQube Cloud comments on the pull request through its GitHub

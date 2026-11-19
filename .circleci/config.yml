@@ -1,6 +1,6 @@
-# Checks on every push, SonarQube Cloud analysis of main and pull requests,
-# release pull requests on main, and the Cloudflare Workers deploy of each
-# release tag. See ADR-0002, ADR-0003, ADR-0004 and ADR-0005.
+# Checks on every push, SonarQube Cloud analysis and end-to-end tests of main
+# and pull requests, release pull requests on main, and the Cloudflare Workers
+# deploy of each release tag. See ADR-0002 to ADR-0006.
 
 version: 2.1
 
@@ -35,6 +35,9 @@ jobs:
     steps:
       - checkout
       - run: .circleci/scripts/halt-unless-main-or-pull-request.sh
+      # The end-to-end tests' coverage, from the e2e job.
+      - attach_workspace:
+          at: .
       - run:
           working_directory: client
           command: npm ci
@@ -42,6 +45,57 @@ jobs:
           working_directory: client
           command: npm run coverage
       - sonarcloud/scan
+
+  e2e:
+    # Docker and a browser need a VM, not a container.
+    machine:
+      image: ubuntu-2404:current
+    steps:
+      - checkout
+      - run: .circleci/scripts/halt-unless-main-or-pull-request.sh
+      - run:
+          name: Use Node.js 24
+          command: |
+            nvm install 24
+            nvm alias default 24
+      - restore_cache:
+          keys:
+            - network-image-v1-{{ checksum "docker/atproto/Dockerfile" }}
+      - run:
+          name: Load the cached network image, or build it
+          command: |
+            if [[ -f ~/network-image.tar ]]; then
+              docker load --input ~/network-image.tar
+            else
+              docker compose build
+              docker save --output ~/network-image.tar portfolio-atproto
+            fi
+      - save_cache:
+          key: network-image-v1-{{ checksum "docker/atproto/Dockerfile" }}
+          paths:
+            - ~/network-image.tar
+      - run:
+          working_directory: client
+          command: npm ci
+      - restore_cache:
+          keys:
+            - playwright-v1-{{ checksum "client/package-lock.json" }}
+      - run:
+          working_directory: client
+          command: npx playwright install --with-deps chromium
+      - save_cache:
+          key: playwright-v1-{{ checksum "client/package-lock.json" }}
+          paths:
+            - ~/.cache/ms-playwright
+      - run:
+          working_directory: client
+          command: npm run test:e2e
+      - persist_to_workspace:
+          root: .
+          paths:
+            - client/coverage-e2e/lcov.info
+      - store_artifacts:
+          path: client/test-results
 
   release:
     executor: node
@@ -76,6 +130,8 @@ workflows:
               only: /^client-v.*/
       - analyze:
           context: SonarCloud
+          requires: [e2e]
+      - e2e
       - release:
           context: GitHub
           requires: [check]
