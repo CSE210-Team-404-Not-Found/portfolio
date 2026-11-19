@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react'
+import { screen, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { renderAt } from '../test/render-at.tsx'
 
@@ -33,6 +33,33 @@ describe('ProfilePage', () => {
     expect(
       await screen.findByRole('heading', { level: 1, name: 'alice.test' }),
     ).toBeInTheDocument()
+  })
+
+  it('shows the job title, intro and links from the mock data', async () => {
+    mockProfileResponse(200, { handle: 'alice.test', displayName: 'Alice' })
+    renderAt('/profile/alice.test')
+
+    expect(await screen.findByText('Student developer')).toBeInTheDocument()
+    expect(screen.getByText(/Placeholder intro/)).toBeInTheDocument()
+    // links open in a new tab so you don't lose the profile
+    const linkedin = screen.getByRole('link', { name: /LinkedIn/ })
+    expect(linkedin).toHaveAttribute('href', 'https://www.linkedin.com/')
+    expect(linkedin).toHaveAttribute('target', '_blank')
+  })
+
+  it('has a top bar that jumps to the sections and a footer', async () => {
+    mockProfileResponse(200, { handle: 'alice.test', displayName: 'Alice' })
+    renderAt('/profile/alice.test')
+
+    const nav = await screen.findByRole('navigation', { name: 'Portfolio sections' })
+    expect(within(nav).getByRole('link', { name: 'Work' })).toHaveAttribute('href', '#work')
+    expect(within(nav).getByRole('link', { name: 'About' })).toHaveAttribute('href', '#about')
+    // the links only work if those ids are actually on the page
+    expect(document.getElementById('work')).not.toBeNull()
+    expect(document.getElementById('about')).not.toBeNull()
+
+    expect(screen.getByText(`© ${new Date().getFullYear()} Alice`)).toBeInTheDocument()
+    expect(screen.getByText('Made with OpenShowcase')).toBeInTheDocument()
   })
 
   it('shows numbered project cards that link to each project', async () => {

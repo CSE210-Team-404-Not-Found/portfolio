@@ -1,5 +1,5 @@
 // fake data for the profile page until #18 is done
-// field names are the same as Max's project lexicon (com.at-folio.temp.project)
+// field names are the same as Max's lexicons (com.at-folio.temp.project and com.at-folio.temp.profile)
 // so when the real records are ready only this file should need to change
 
 export type MockProject = {
@@ -9,6 +9,23 @@ export type MockProject = {
   summary: string
   // the real record has a blob here but the page just needs a url to show it
   thumbnailUrl?: string
+}
+
+export type MockPortfolioProfile = {
+  jobTitle?: string
+  description?: string
+  // not in the lexicon yet but Max said we'd want links (linkedin etc) and the figma has them
+  links?: { label: string; url: string }[]
+}
+
+const portfolioProfile: MockPortfolioProfile = {
+  jobTitle: 'Student developer',
+  description:
+    'Placeholder intro. This is where someone writes about themselves, what they work on and what they are looking for.',
+  links: [
+    { label: 'LinkedIn', url: 'https://www.linkedin.com/' },
+    { label: 'GitHub', url: 'https://github.com/' },
+  ],
 }
 
 const projects: MockProject[] = [
@@ -28,6 +45,11 @@ const projects: MockProject[] = [
     summary: 'A Discord bot that pairs up classmates for study sessions before exams.',
   },
 ]
+
+// everyone gets the same intro for now
+export function getMockPortfolioProfile(): MockPortfolioProfile {
+  return portfolioProfile
+}
 
 // everyone gets the same projects for now
 // the real one will need the handle or did of whose records to read

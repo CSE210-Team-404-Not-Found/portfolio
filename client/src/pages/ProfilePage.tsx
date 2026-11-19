@@ -1,7 +1,10 @@
 import { useParams } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
+import { ProfileFooter } from '../components/profile/ProfileFooter.tsx'
+import { ProfileHero } from '../components/profile/ProfileHero.tsx'
+import { ProfileNav } from '../components/profile/ProfileNav.tsx'
 import { SelectedWork } from '../components/profile/SelectedWork.tsx'
-import { getMockProjects } from '../profile/mock-data.ts'
+import { getMockPortfolioProfile, getMockProjects } from '../profile/mock-data.ts'
 import { ProfileNotFoundError, useProfile } from '../profile/useProfile.ts'
 
 // /profile/:handle
@@ -61,15 +64,24 @@ export function ProfilePage() {
   const name = profile.displayName || shownHandle
 
   // still mock data until #18 is done
+  const portfolio = getMockPortfolioProfile()
   const projects = getMockProjects()
+
+  // use their portfolio intro if they wrote one and if not use their bluesky bio
+  const intro = portfolio.description ?? profile.description
 
   return (
     <PageShell>
-      <div className="py-12">
-        <h1 className="text-3xl font-semibold">{name}</h1>
-        <p className="text-neutral-600 dark:text-neutral-400">@{shownHandle}</p>
-      </div>
+      <ProfileNav name={name} avatar={profile.avatar} />
+      <ProfileHero
+        name={name}
+        handle={shownHandle}
+        jobTitle={portfolio.jobTitle}
+        intro={intro}
+        links={portfolio.links}
+      />
       <SelectedWork handle={shownHandle} projects={projects} />
+      <ProfileFooter name={name} />
     </PageShell>
   )
 }
