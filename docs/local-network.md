@@ -57,6 +57,19 @@ curl "http://localhost:2584/xrpc/app.bsky.actor.getProfile?actor=alice.test"
 The first returns Alice's DID from the PDS, the second her profile from the
 AppView. `docker compose logs atproto` shows the startup log.
 
+## End-to-end tests
+
+`npm run test:e2e` in `client/` runs the Playwright tests in `client/e2e/`.
+Testcontainers starts this network from `compose.yaml`, waits until it is
+seeded and removes it afterwards; Playwright serves the client as
+`npm run dev:docker` does and signs in as Alice through the PDS. The tests
+need Docker and the network's ports, so stop a running `docker compose up`
+first, and a browser from `npx playwright install chromium`, once. They also
+record which lines of `client/src` the browser ran, in
+`client/coverage-e2e/lcov.info`. CircleCI runs them on `main` and pull
+requests and hands that file to the SonarQube Cloud analysis, next to the
+unit tests' coverage.
+
 ## Upgrading
 
 `docker/atproto/Dockerfile` pins the `@atproto/dev-env` version. Change it
