@@ -35,6 +35,21 @@ describe('ProfilePage', () => {
     ).toBeInTheDocument()
   })
 
+  it('shows numbered project cards that link to each project', async () => {
+    mockProfileResponse(200, { handle: 'alice.test', displayName: 'Alice' })
+    renderAt('/profile/alice.test')
+
+    expect(await screen.findByRole('heading', { name: 'Selected work' })).toBeInTheDocument()
+    // the first mock project is OpenShowcase and its summary says "portfolio site"
+    expect(screen.getByRole('link', { name: /portfolio site/ })).toHaveAttribute(
+      'href',
+      '/profile/alice.test/project/3lbmockproj01',
+    )
+    // numbered like the figma
+    expect(screen.getByText('01')).toBeInTheDocument()
+    expect(screen.getByText('03')).toBeInTheDocument()
+  })
+
   it('says so when the handle has no account', async () => {
     mockProfileResponse(400, { error: 'InvalidRequest', message: 'Profile not found' })
     renderAt('/profile/nobody.test')

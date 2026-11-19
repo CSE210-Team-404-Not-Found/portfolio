@@ -1,5 +1,7 @@
 import { useParams } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
+import { SelectedWork } from '../components/profile/SelectedWork.tsx'
+import { getMockProjects } from '../profile/mock-data.ts'
 import { ProfileNotFoundError, useProfile } from '../profile/useProfile.ts'
 
 // /profile/:handle
@@ -58,10 +60,16 @@ export function ProfilePage() {
   // not everyone sets a display name so fall back to the handle
   const name = profile.displayName || shownHandle
 
+  // still mock data until #18 is done
+  const projects = getMockProjects()
+
   return (
     <PageShell>
-      <h1 className="text-3xl font-semibold">{name}</h1>
-      <p className="text-neutral-600 dark:text-neutral-400">@{shownHandle}</p>
+      <div className="py-12">
+        <h1 className="text-3xl font-semibold">{name}</h1>
+        <p className="text-neutral-600 dark:text-neutral-400">@{shownHandle}</p>
+      </div>
+      <SelectedWork handle={shownHandle} projects={projects} />
     </PageShell>
   )
 }

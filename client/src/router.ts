@@ -8,6 +8,7 @@ import { RootLayout } from './components/RootLayout.tsx'
 import { HomePage } from './pages/HomePage.tsx'
 import { LoginPage } from './pages/LoginPage.tsx'
 import { ProfilePage } from './pages/ProfilePage.tsx'
+import { ProjectPage } from './pages/ProjectPage.tsx'
 
 const rootRoute = createRootRoute({ component: RootLayout })
 
@@ -29,7 +30,13 @@ const profileRoute = createRoute({
   component: ProfilePage,
 })
 
-const routeTree = rootRoute.addChildren([indexRoute, loginRoute, profileRoute])
+const projectRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/profile/$handle/project/$pid',
+  component: ProjectPage,
+})
+
+const routeTree = rootRoute.addChildren([indexRoute, loginRoute, profileRoute, projectRoute])
 
 /** Tests pass a memory history; the app uses the browser's history. */
 export function createAppRouter(history?: RouterHistory) {
