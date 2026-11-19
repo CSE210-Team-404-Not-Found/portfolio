@@ -8,7 +8,10 @@
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["title", "summary"],
+        "required": [
+          "title",
+          "summary"
+        ],
         "properties": {
           "title": {
             "type": "string",
@@ -24,21 +27,52 @@
           },
           "thumbnail": {
             "type": "blob",
-            "accept": ["image/*"],
+            "accept": [
+              "image/*"
+            ],
             "maxSize": 1048576,
             "description": "The project's preview image, limited to 1 MB."
           },
           "tiptapJson": {
             "type": "blob",
-            "accept": ["application/json"],
+            "accept": [
+              "application/json"
+            ],
             "maxSize": 500000,
             "description": "The Tiptap document JSON. The app validates its structure and allowed nodes."
           },
           "tiptapHtml": {
             "type": "blob",
-            "accept": ["text/html"],
+            "accept": [
+              "text/html"
+            ],
             "maxSize": 500000,
-            "description": "HTML rendering of the Tiptap document, for consumers that don't use Tiptap."
+            "description": "HTML generated from Tiptap JSON, including media. Untrusted: consumers must sanitize it and allow only supported media sources. Load model-viewer separately to display 3D."
+          },
+          "media": {
+            "type": "array",
+            "maxLength": 20,
+            "description": "Media referenced by the Tiptap document. Keep blob references here so files remain attached to this record. Audio-only WebM uploads may be identified as video/webm by the PDS.",
+            "items": {
+              "type": "blob",
+              "accept": [
+                "image/png",
+                "image/jpeg",
+                "image/webp",
+                "image/gif",
+                "audio/*",
+                "video/webm",
+                "model/gltf-binary"
+              ],
+              "maxSize": 10485760
+            }
+          },
+          "descriptionFormat": {
+            "type": "string",
+            "knownValues": [
+              "tiptap-media-v1"
+            ],
+            "description": "Document format including image, YouTube, audioRecording and model3d nodes."
           }
         }
       }

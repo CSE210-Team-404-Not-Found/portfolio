@@ -16,7 +16,7 @@
  * session need to sign in again to grant these permissions.
  */
 export const OAUTH_SCOPE =
-  'atproto repo:com.at-folio.temp.profile repo:com.at-folio.temp.project blob:image/* blob:application/json blob:text/html'
+  'atproto repo:com.at-folio.temp.profile repo:com.at-folio.temp.project blob:image/* blob:audio/* blob:model/gltf-binary blob:application/json blob:text/html'
 
 /** Shown to the user on their authorization server's consent screen. */
 const CLIENT_NAME = 'ATFolio'
