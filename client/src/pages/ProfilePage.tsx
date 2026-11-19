@@ -1,28 +1,54 @@
 import { useParams } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
-import { useProfile } from '../profile/useProfile.ts'
+import { ProfileNotFoundError, useProfile } from '../profile/useProfile.ts'
 
 // /profile/:handle
 // anyone can see this page, you don't have to be signed in
 export function ProfilePage() {
   const { handle } = useParams({ from: '/profile/$handle' })
-  const { data: profile, isPending } = useProfile(handle)
+  const { data: profile, error, isPending, refetch } = useProfile(handle)
 
   if (isPending) {
     return (
       <PageShell>
-        <p role="status" className="text-neutral-600 dark:text-neutral-400">
+        <p role="status" className="py-12 text-neutral-600 dark:text-neutral-400">
           Loading profile…
         </p>
       </PageShell>
     )
   }
 
-  // TODO not found and bluesky being down should get their own messages
-  if (!profile) {
+  // handle doesn't belong to any account
+  if (error instanceof ProfileNotFoundError) {
     return (
       <PageShell>
-        <p>Couldn't load this profile.</p>
+        <div className="py-12">
+          <h1 className="text-2xl font-semibold">Profile not found</h1>
+          <p className="mt-2 text-neutral-600 dark:text-neutral-400">
+            There's no account with the handle @{handle}. Check the spelling and try again.
+          </p>
+        </div>
+      </PageShell>
+    )
+  }
+
+  // anything else like bluesky's server being down
+  if (error) {
+    return (
+      <PageShell>
+        <div className="py-12">
+          <h1 className="text-2xl font-semibold">Couldn't load this profile</h1>
+          <p className="mt-2 text-neutral-600 dark:text-neutral-400">
+            Something went wrong reaching the profile server.
+          </p>
+          <button
+            type="button"
+            onClick={() => void refetch()}
+            className="mt-4 rounded-lg border border-neutral-300 px-4 py-2 text-sm hover:bg-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-800"
+          >
+            Try again
+          </button>
+        </div>
       </PageShell>
     )
   }

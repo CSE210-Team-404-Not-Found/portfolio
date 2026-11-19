@@ -34,4 +34,21 @@ describe('ProfilePage', () => {
       await screen.findByRole('heading', { level: 1, name: 'alice.test' }),
     ).toBeInTheDocument()
   })
+
+  it('says so when the handle has no account', async () => {
+    mockProfileResponse(400, { error: 'InvalidRequest', message: 'Profile not found' })
+    renderAt('/profile/nobody.test')
+
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Profile not found' }),
+    ).toBeInTheDocument()
+    expect(screen.getByText(/@nobody\.test/)).toBeInTheDocument()
+  })
+
+  it('shows a try again button when bluesky is down', async () => {
+    mockProfileResponse(500, {})
+    renderAt('/profile/alice.test')
+
+    expect(await screen.findByRole('button', { name: 'Try again' })).toBeInTheDocument()
+  })
 })
