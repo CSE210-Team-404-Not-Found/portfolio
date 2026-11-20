@@ -4,7 +4,7 @@ import { ProfileFooter } from '../components/profile/ProfileFooter.tsx'
 import { ProfileHero } from '../components/profile/ProfileHero.tsx'
 import { ProfileNav } from '../components/profile/ProfileNav.tsx'
 import { SelectedWork } from '../components/profile/SelectedWork.tsx'
-import { getMockPortfolioProfile } from '../profile/mock-data.ts'
+import { usePortfolioProfile } from '../profile/usePortfolioProfile.ts'
 import { ProfileNotFoundError, useProfile } from '../profile/useProfile.ts'
 import { useProjects } from '../profile/useProjects.ts'
 
@@ -15,6 +15,7 @@ export function ProfilePage() {
   const { data: profile, error, isPending, refetch } = useProfile(handle)
   // needs their did so this one waits for the bluesky profile to load first
   const projects = useProjects(profile?.did)
+  const { data: portfolio } = usePortfolioProfile(profile?.did)
 
   if (isPending) {
     return (
@@ -63,25 +64,17 @@ export function ProfilePage() {
 
   // bluesky gives back the handle the way it's actually spelled
   const shownHandle = profile.handle ?? handle
-  // not everyone sets a display name so fall back to the handle
-  const name = profile.displayName || shownHandle
-
-  // intro is still mock data until the next commit
-  const portfolio = getMockPortfolioProfile()
-
-  // use their portfolio intro if they wrote one and if not use their bluesky bio
-  const intro = portfolio.description ?? profile.description
+  // use the name from their portfolio first then bluesky and then just the handle
+  const name = portfolio?.fullName || profile.displayName || shownHandle
+  // same for the picture and the intro
+  // portfolio is null when they haven't set one up so these fall back to bluesky
+  const avatar = portfolio?.avatarUrl ?? profile.avatar
+  const intro = portfolio?.description ?? profile.description
 
   return (
     <PageShell>
-      <ProfileNav name={name} avatar={profile.avatar} />
-      <ProfileHero
-        name={name}
-        handle={shownHandle}
-        jobTitle={portfolio.jobTitle}
-        intro={intro}
-        links={portfolio.links}
-      />
+      <ProfileNav name={name} avatar={avatar} />
+      <ProfileHero name={name} handle={shownHandle} jobTitle={portfolio?.jobTitle} intro={intro} />
       <SelectedWork handle={shownHandle} projects={projects.data} failed={projects.isError} />
       <ProfileFooter name={name} />
     </PageShell>

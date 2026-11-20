@@ -26,6 +26,7 @@ function mockProfileResponse(
   body: unknown,
   projects: unknown[] = twoProjects,
   projectsStatus = 200,
+  portfolio: unknown = null,
 ) {
   vi.spyOn(globalThis, 'fetch').mockImplementation(async (input) => {
     const url = String(input instanceof Request ? input.url : input)
@@ -37,6 +38,11 @@ function mockProfileResponse(
         { id: '#atproto_pds', type: 'AtprotoPersonalDataServer', serviceEndpoint: PDS },
       ]
       return new Response(JSON.stringify({ id: DID, service }), { status: 200 })
+    }
+    if (url.includes('com.atproto.repo.getRecord')) {
+      // null means they haven't made a portfolio profile so the pds says it isn't there
+      if (!portfolio) return new Response('{"error":"RecordNotFound"}', { status: 400 })
+      return new Response(JSON.stringify(portfolio), { status: 200 })
     }
     if (url.includes('com.atproto.repo.listRecords')) {
       return new Response(JSON.stringify({ records: projects }), { status: projectsStatus })
@@ -67,16 +73,44 @@ describe('ProfilePage', () => {
     ).toBeInTheDocument()
   })
 
-  it('shows the job title, intro and links from the mock data', async () => {
-    mockProfileResponse(200, { did: DID, handle: 'alice.test', displayName: 'Alice' })
+  it('shows the name, job title and intro from their portfolio profile', async () => {
+    const portfolio = {
+      uri: `at://${DID}/com.at-folio.temp.profile/self`,
+      cid: 'cid1',
+      value: {
+        fullName: 'Alice Smith',
+        jobTitle: 'Student developer',
+        description: 'I make things',
+      },
+    }
+    mockProfileResponse(
+      200,
+      { did: DID, handle: 'alice.test', displayName: 'Alice', description: 'bluesky bio' },
+      twoProjects,
+      200,
+      portfolio,
+    )
     renderAt('/profile/alice.test')
 
-    expect(await screen.findByText('Student developer')).toBeInTheDocument()
-    expect(screen.getByText(/Placeholder intro/)).toBeInTheDocument()
-    // links open in a new tab so you don't lose the profile
-    const linkedin = screen.getByRole('link', { name: /LinkedIn/ })
-    expect(linkedin).toHaveAttribute('href', 'https://www.linkedin.com/')
-    expect(linkedin).toHaveAttribute('target', '_blank')
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Alice Smith' }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('Student developer')).toBeInTheDocument()
+    expect(screen.getByText('I make things')).toBeInTheDocument()
+    // their portfolio intro wins over the bluesky bio
+    expect(screen.queryByText('bluesky bio')).not.toBeInTheDocument()
+  })
+
+  it('uses their bluesky bio when they have no portfolio profile', async () => {
+    mockProfileResponse(200, {
+      did: DID,
+      handle: 'alice.test',
+      displayName: 'Alice',
+      description: 'bluesky bio',
+    })
+    renderAt('/profile/alice.test')
+
+    expect(await screen.findByText('bluesky bio')).toBeInTheDocument()
   })
 
   it('has a top bar that jumps to the sections and a footer', async () => {
