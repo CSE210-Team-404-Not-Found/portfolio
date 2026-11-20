@@ -4,14 +4,17 @@ import { ProfileFooter } from '../components/profile/ProfileFooter.tsx'
 import { ProfileHero } from '../components/profile/ProfileHero.tsx'
 import { ProfileNav } from '../components/profile/ProfileNav.tsx'
 import { SelectedWork } from '../components/profile/SelectedWork.tsx'
-import { getMockPortfolioProfile, getMockProjects } from '../profile/mock-data.ts'
+import { getMockPortfolioProfile } from '../profile/mock-data.ts'
 import { ProfileNotFoundError, useProfile } from '../profile/useProfile.ts'
+import { useProjects } from '../profile/useProjects.ts'
 
 // /profile/:handle
 // anyone can see this page, you don't have to be signed in
 export function ProfilePage() {
   const { handle } = useParams({ from: '/profile/$handle' })
   const { data: profile, error, isPending, refetch } = useProfile(handle)
+  // needs their did so this one waits for the bluesky profile to load first
+  const projects = useProjects(profile?.did)
 
   if (isPending) {
     return (
@@ -63,9 +66,8 @@ export function ProfilePage() {
   // not everyone sets a display name so fall back to the handle
   const name = profile.displayName || shownHandle
 
-  // still mock data until #18 is done
+  // intro is still mock data until the next commit
   const portfolio = getMockPortfolioProfile()
-  const projects = getMockProjects()
 
   // use their portfolio intro if they wrote one and if not use their bluesky bio
   const intro = portfolio.description ?? profile.description
@@ -80,7 +82,7 @@ export function ProfilePage() {
         intro={intro}
         links={portfolio.links}
       />
-      <SelectedWork handle={shownHandle} projects={projects} />
+      <SelectedWork handle={shownHandle} projects={projects.data} failed={projects.isError} />
       <ProfileFooter name={name} />
     </PageShell>
   )

@@ -1,9 +1,9 @@
 import { Link } from '@tanstack/react-router'
-import type { MockProject } from '../../profile/mock-data.ts'
+import type { Project } from '../../profile/useProjects.ts'
 
 type ProjectCardProps = {
   handle: string
-  project: MockProject
+  project: Project
   index: number
 }
 
